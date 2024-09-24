@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+
+  <title>Hello from Electron renderer!</title>
+  <style>
+    body {
+      user-select: none;
+      /*禁止选中*/
+    }
+    .container {
+      width: 300px;
+      height: 100px;
+      /* display: flex; */
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      background-color: #fff;
+    }
+    .first {
+      width: 300px;
+      height: 50px;
+    }
+    .second {
+      width: 300px;
+      height: 50px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="first">
+      <a href="">扫地：</a>
+      <a class="swept" href=""></a>
+    </div>
+    <div class="second">
+      <a href="">黑板：</a>
+      <a class="blackboard" href=""></a>
+    </div>
+  </div>
+  <script>
+    
+    const container = document.querySelector('.container'); 
+    const swept = document.querySelector('.swept');
+    const blackboard = document.querySelector('.blackboard');
+    const data = new Date().getDay();
+  </script>
+</body>
+
+</html> 
