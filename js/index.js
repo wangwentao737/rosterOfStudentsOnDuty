@@ -58,8 +58,8 @@ function backGroup() {
     studentChange()
 }
 
-// swept.innerHTML = jsonData.array
-swept.innerHTML = students[0].swept;    
+swept.innerHTML = jsonData.array[0]
+ 
 
 
 

@@ -14,7 +14,8 @@ function createWindow() {
     webPreferences: {
       devTools: false,
       nodeIntegration: true,
-      enablemotemodule: true
+      enablemotemodule: true,
+      contextIsolation: false
     }
 
   })
