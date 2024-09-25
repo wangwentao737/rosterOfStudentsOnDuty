@@ -12,6 +12,12 @@ const students = [{
     blackboard: 3,
 },
 ]
+const fs = require('fs');
+const path = require('path');
+const data = fs.readFileSync(path.join(__dirname, 'data.json'), 'utf8');
+const jsonData = JSON.parse(data);
+
+
 const container = document.querySelector('.container'); 
 const swept = document.querySelector('.swept');
 const blackboard = document.querySelector('.blackboard');
@@ -23,7 +29,7 @@ function changeOutData(data,num) {
     
 }
 function countChange(num) {
-    const maxCount = students.length;
+    const maxCount = students.length - 1;
     if (num == 1) {
         if (counts== maxCount) {
             counts = 0;
@@ -51,5 +57,10 @@ function backGroup() {
     countChange(0)
     studentChange()
 }
+
+// swept.innerHTML = jsonData.array
+swept.innerHTML = students[0].swept;    
+
+
 
 
