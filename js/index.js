@@ -1,17 +1,3 @@
-const students = [{
-    swept: 1,
-    blackboard: 2,
-},{
-    swept: 2,
-    blackboard: 1,
-},{
-    swept: 3,
-    blackboard: 4,
-},{
-    swept: 4,
-    blackboard: 3,
-},
-]
 const fs = require('fs');
 const path = require('path');
 const data = fs.readFileSync(path.join(__dirname, 'data.json'), 'utf8');
@@ -58,8 +44,8 @@ function backGroup() {
     studentChange()
 }
 
-swept.innerHTML = jsonData.array[0]
- 
+// swept.innerHTML = jsonData.array
+swept.innerHTML = students[0].swept;    
 
 
 
