@@ -1,57 +1,66 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow } = require('electron');
 
+let Store;
+const storePromise = import('electron-store').then(module => {
+  Store = module.default;  // 使用默认导出
+});
 
-let mainWindow
+let mainWindow;
+let isDragging = false;
+let dragOffset = { x: 0, y: 0 };
 
 function createWindow() {
-  mainWindow = new BrowserWindow({
-    width: 500,
-    height: 300,
-    transparent: true,
-    resizable: false,
-    frame: false,
-    nodeIntegration: true,
-    webPreferences: {
-      devTools: false,
-      nodeIntegration: true,
-      enablemotemodule: true,
-      contextIsolation: false
-    }
+  storePromise.then(() => {
+    const store = new Store();
+    const savedBounds = store.get('windowBounds') || { x: 1220, y: 200, width: 500, height: 300 };
 
-  })
+    mainWindow = new BrowserWindow({
+      x: savedBounds.x,
+      y: savedBounds.y,
+      width: savedBounds.width,
+      height: savedBounds.height,
+      transparent: true,
+      resizable: false,
+      frame: false,
+      webPreferences: {
+        nodeIntegration: true,
+        contextIsolation: false,
+      },
+    });
 
-  mainWindow.loadFile('index.html')
+    mainWindow.loadFile('index.html');
 
-  // 监听鼠标按下事件
-  mainWindow.on('mousedown', (event) => {
-    if (event.button === 0) { // 左键按下
-      mainWindow.startDragging()
-    }
-  })
+    mainWindow.webContents.on('ipc-message', (event, channel, args) => {
+      if (channel === 'drag-start') {
+        isDragging = true;
+        dragOffset = args;
+      } else if (channel === 'drag-move') {
+        if (isDragging) {
+          const { screenX, screenY } = args;
+          mainWindow.setPosition(screenX - dragOffset.x, screenY - dragOffset.y);
+        }
+      } else if (channel === 'drag-stop') {
+        isDragging = false;
+      }
+    });
 
-  // 监听鼠标移动事件
-  mainWindow.on('mousemove', (event) => {
-    if (mainWindow.isDragging()) {
-      mainWindow.setPosition(event.screenX - mainWindow.dragOffsetX, event.screenY - mainWindow.dragOffsetY)
-    }
-  })
+    mainWindow.on('close', () => {
+      const bounds = mainWindow.getBounds();
+      store.set('windowBounds', bounds);
+    });
 
-  // 监听鼠标释放事件
-  mainWindow.on('mouseup', () => {
-    mainWindow.stopDragging()
-  })
-
-  mainWindow.on('closed', function () {
-    mainWindow = null
-  })
+    mainWindow.on('closed', function () {
+      mainWindow = null;
+    });
+  });
 }
 
-app.on('ready', createWindow)
+app.on('ready', createWindow);
 
 app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit()
-})
+  if (process.platform !== 'darwin') app.quit();
+});
 
 app.on('activate', function () {
-  if (mainWindow === null) createWindow()
-})
+  if (mainWindow === null) createWindow();
+});

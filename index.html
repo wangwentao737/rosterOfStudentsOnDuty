@@ -3,46 +3,71 @@
 
 <head>
   <meta charset="UTF-8" />
-
   <title>Hello from Electron renderer!</title>
   <style>
     body {
       user-select: none;
-      /*禁止选中*/
     }
+
     .container {
-      width: 300px;
-      height: 100px;
-      /* display: flex; */
+      width: 200px;
+      height: 70px;
       justify-content: center;
       align-items: center;
-      font-size: 20px;
+      font-size: 25px;
       background-color: #fff;
+      border-radius: 10px;
+      opacity: 0.5;
+      user-select: none;
     }
-    .first {
-      width: 300px;
-      height: 50px;
+
+    .container:hover {
+      opacity: 0.1;
     }
-    .second {
-      width: 300px;
-      height: 50px;
+
+    .drag-region {
+      width: 100%;
+      height: 40px;
+      background-color: #0078D7;
+      cursor: move;
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
+  <div class="container" id="draggable-container">
     <div class="first">
-      <div >扫地：</div>
-      <div class="swept" ></div>
+      <a class="one"> 扫地：</a>
+      <a class="swept"></a>
     </div>
     <div class="second">
-      <div >黑板：</div>
-      <div class="blackboard" ></div>
+      <a class="two"> 黑板：</a>
+      <a class="blackboard"></a>
     </div>
   </div>
+
+  <script>
+    const { ipcRenderer } = require('electron');
+    const container = document.getElementById('draggable-container');
+    let dragOffset = { x: 0, y: 0 };
+
+    container.addEventListener('mousedown', (event) => {
+      dragOffset = { x: event.offsetX, y: event.offsetY };
+      ipcRenderer.send('drag-start', dragOffset);
+    });
+
+    document.addEventListener('mousemove', (event) => {
+      if (event.buttons === 1) {  // 当左键按下时
+        ipcRenderer.send('drag-move', { screenX: event.screenX, screenY: event.screenY });
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      ipcRenderer.send('drag-stop');
+    });
+  </script>
   <script src="js/students.js"></script>
   <script src="js/index.js"></script>
 </body>
 
-</html> 
+</html>

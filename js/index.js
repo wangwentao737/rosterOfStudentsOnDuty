@@ -104,10 +104,7 @@ window.addEventListener('keydown', (e) => {
     if (e.key == 'ArrowLeft' && e.ctrlKey) {
         backGroup()
     }
-    if (e.key == 'T' && e.ctrlKey) {
-        
-        nextGroup()
-    }
+    
 })
 
 window.addEventListener('load', dailyChangeOuterData)
